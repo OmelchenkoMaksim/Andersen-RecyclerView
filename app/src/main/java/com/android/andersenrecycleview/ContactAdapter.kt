@@ -11,16 +11,21 @@ import com.bumptech.glide.Glide
 
 typealias OnItemClicked = (Contact) -> Unit
 
-class ContactAdapter(
-    private val contacts: List<Contact>,
-    private val context: Context,
-    private val onItemClicked: OnItemClicked,
-) : RecyclerView.Adapter<ContactAdapter.ContactHolder>() {
+class ContactAdapter : RecyclerView.Adapter<ContactAdapter.ContactHolder> {
+
+    private var contacts: List<Contact>
+    private val context: Context
+    private val onItemClicked: OnItemClicked
+
+    constructor(contacts: List<Contact>, context: Context, onItemClicked: OnItemClicked) : super() {
+        this.contacts = contacts
+        this.context = context
+        this.onItemClicked = onItemClicked
+    }
 
     class ContactHolder(
         itemView: View,
         private val context: Context,
-        private val contactsSize: Int,
         onItemClicked: OnItemClicked
     ) : RecyclerView.ViewHolder(itemView) {
 
@@ -63,7 +68,7 @@ class ContactAdapter(
     ): ContactHolder {
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.contact_view_item, parent, false)
-        return ContactHolder(view, context, contacts.size, onItemClicked)
+        return ContactHolder(view, context, onItemClicked)
     }
 
     override fun onBindViewHolder(holder: ContactHolder, position: Int) {
@@ -72,4 +77,9 @@ class ContactAdapter(
     }
 
     override fun getItemCount(): Int = contacts.size
+
+    fun setContacts(contacts: List<Contact>) {
+        this.contacts = contacts
+        notifyDataSetChanged()
+    }
 }

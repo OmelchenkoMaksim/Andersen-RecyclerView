@@ -2,12 +2,13 @@ package com.android.andersenrecycleview
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
+import com.android.andersenfragments.R
 import com.android.andersenfragments.databinding.FragmentListBinding
 
 const val UID_EXTRA = "UID_EXTRA"
@@ -25,6 +26,7 @@ class ListFragment : Fragment() {
         get() = _binding!!
 
     private lateinit var adapter: ContactAdapter
+    private var searchRequest: String = ""
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -36,9 +38,35 @@ class ListFragment : Fragment() {
 
         adapter = ContactAdapter(
             DataBase.getContacts(),
-            requireContext(),
-            { contact -> onListItemClickListener.onItemClicked(contact) }
-        )
+            requireContext(), {
+                onListItemClickListener.onItemClicked(it)
+            })
+
+        setHasOptionsMenu(true)
+
+        Log.d("afteradapter", searchRequest)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.search_view_layout, menu)
+
+        val searchItem: MenuItem = menu.findItem(R.id.menu_item_search)
+        val searchView = searchItem.actionView as SearchView
+
+        searchView.apply {
+            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(queryText: String): Boolean {
+                    return false
+                }
+
+                override fun onQueryTextChange(queryText: String): Boolean {
+                    val filteredData = DataBase.getContactsByQuery(queryText)
+                    adapter.setContacts(filteredData)
+                    return true
+                }
+            })
+        }
     }
 
     override fun onCreateView(

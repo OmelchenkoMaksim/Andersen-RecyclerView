@@ -4,6 +4,7 @@ import java.util.*
 
 object DataBase {
     private val contactsList = mutableListOf<Contact>()
+
     // да, знаю что это так себе, я почти весь день разбирался как получить json из url
     // не знаю даже че так тяжко пошло с ним, так же пробовал через retrofit
     // в общем уже вечер субботы, я регуляркой их очистил, а не руками и добавил прям здесь
@@ -164,7 +165,26 @@ object DataBase {
         }
     }
 
+    fun getContactsByQuery(request: String): List<Contact> {
+        return if (request.isEmpty()) contactsList
+        else contactsList.filter { contact ->
+            contact.name.startsWith(request, true)
+        }
+    }
+
     fun getContacts(): List<Contact> {
         return contactsList
+    }
+
+    fun searchBySurname(surname: String): Contact? {
+        return contactsList.firstOrNull { contact ->
+            contact.surname == surname
+        }
+    }
+
+    fun findSurname(surname: String): String? {
+        return contactsList.firstOrNull { contact ->
+            contact.surname == surname
+        }?.surname
     }
 }
