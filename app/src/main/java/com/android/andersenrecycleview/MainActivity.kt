@@ -9,19 +9,31 @@ import com.android.andersenfragments.R
 class MainActivity : AppCompatActivity(), ListFragment.OnListItemClickListener,
     DetailsFragment.OnSaveClickListener {
 
+    private var isTablet: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        isTablet = resources.getBoolean(R.bool.isTablet)
+
         updateMainContainer()
     }
 
     override fun onItemClicked(contact: Contact) {
         val detailsFragment = DetailsFragment.newInstance(contact)
-        replaceFragmentInContainer(
-            detailsFragment,
-            R.id.fragment_container_main,
-            addToBackStack = true
-        )
+        if (isTablet) {
+            replaceFragmentInContainer(
+                detailsFragment,
+                R.id.fragment_details_container,
+                addToBackStack = false
+            )
+        } else {
+            replaceFragmentInContainer(
+                detailsFragment,
+                R.id.fragment_container_main,
+                addToBackStack = true
+            )
+        }
     }
 
     override fun onSaveClicked() {

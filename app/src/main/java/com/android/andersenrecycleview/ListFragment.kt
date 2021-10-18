@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.andersenfragments.R
 import com.android.andersenfragments.databinding.FragmentListBinding
 
@@ -26,7 +27,6 @@ class ListFragment : Fragment() {
         get() = _binding!!
 
     private lateinit var adapter: ContactAdapter
-    private var searchRequest: String = ""
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -37,14 +37,12 @@ class ListFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         adapter = ContactAdapter(
-            DataBase.getContacts(),
-            requireContext(), {
-                onListItemClickListener.onItemClicked(it)
-            })
+            DataBase.contactsList
+        ) {
+            onListItemClickListener.onItemClicked(it)
+        }
 
         setHasOptionsMenu(true)
-
-        Log.d("afteradapter", searchRequest)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -90,7 +88,7 @@ class ListFragment : Fragment() {
 
     private fun initRecyclerView() {
         binding.apply {
-            recyclerView.layoutManager = GridLayoutManager(requireContext(), 3)
+            recyclerView.layoutManager = LinearLayoutManager(requireContext())
             recyclerView.adapter = adapter
 
             // ну что же сеточку я нарисовал

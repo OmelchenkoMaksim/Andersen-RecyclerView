@@ -1,5 +1,6 @@
 package com.android.andersenrecycleview
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -11,21 +12,13 @@ import com.bumptech.glide.Glide
 
 typealias OnItemClicked = (Contact) -> Unit
 
-class ContactAdapter : RecyclerView.Adapter<ContactAdapter.ContactHolder> {
-
-    private var contacts: List<Contact>
-    private val context: Context
+class ContactAdapter(
+    private var contacts: List<Contact>,
     private val onItemClicked: OnItemClicked
-
-    constructor(contacts: List<Contact>, context: Context, onItemClicked: OnItemClicked) : super() {
-        this.contacts = contacts
-        this.context = context
-        this.onItemClicked = onItemClicked
-    }
+) : RecyclerView.Adapter<ContactAdapter.ContactHolder>() {
 
     class ContactHolder(
         itemView: View,
-        private val context: Context,
         onItemClicked: OnItemClicked
     ) : RecyclerView.ViewHolder(itemView) {
 
@@ -44,7 +37,7 @@ class ContactAdapter : RecyclerView.Adapter<ContactAdapter.ContactHolder> {
 
             with(binding) {
                 titleView.text = contact.getNameAndSurname()
-                downloadImage(context, contact, this)
+                downloadImage(itemView.context, contact, this)
             }
         }
 
@@ -67,8 +60,12 @@ class ContactAdapter : RecyclerView.Adapter<ContactAdapter.ContactHolder> {
         viewType: Int
     ): ContactHolder {
         val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.contact_view_item, parent, false)
-        return ContactHolder(view, context, onItemClicked)
+            LayoutInflater.from(parent.context).inflate(
+                R.layout.contact_view_item,
+                parent,
+                false
+            )
+        return ContactHolder(view, onItemClicked)
     }
 
     override fun onBindViewHolder(holder: ContactHolder, position: Int) {
@@ -78,6 +75,7 @@ class ContactAdapter : RecyclerView.Adapter<ContactAdapter.ContactHolder> {
 
     override fun getItemCount(): Int = contacts.size
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setContacts(contacts: List<Contact>) {
         this.contacts = contacts
         notifyDataSetChanged()

@@ -52,7 +52,7 @@ class DetailsFragment : Fragment() {
         surnameEditText = view.findViewById(R.id.surname_field)
         numberEditText = view.findViewById(R.id.number_field)
         saveButton = view.findViewById(R.id.button_apply_changes)
-        saveButton.text = "СОХРАНИТЬ ИЗМЕНЕНИЯ"
+        saveButton.text = getString(R.string.button_save_changes)
         saveButton.setOnClickListener { saveContact() }
 
         fillDetails()
